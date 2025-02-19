@@ -1,17 +1,3 @@
-#FROM debian:bullseye-slim
-#RUN useradd -m -u 1000 daedr
-#RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
-#RUN apt-get update && apt-get install -y rtorrent wireguard iproute2 resolvconf procps curl
-#RUN ln -s /rtorrent/.rtorrent.rc /home/daedr/.rtorrent.rc
-#EXPOSE 49164/tcp
-#EXPOSE 49164/udp
-#EXPOSE 6881/tcp
-#EXPOSE 6881/udp
-#COPY entrypoint.sh /entrypoint.sh
-#RUN chmod +x /entrypoint.sh
-#ENTRYPOINT ["/entrypoint.sh"]
-
-
 FROM debian:bullseye-slim
 
 RUN useradd -m -u 1000 daedr
