@@ -59,7 +59,7 @@ trackers.use_udp.set = yes
 throttle.max_uploads.set = 100
 throttle.max_uploads.global.set = 250
 
-throttle.global_down.max_rate.set_kb = 1000
+throttle.global_down.max_rate.set_kb = 10000
 throttle.global_up.max_rate.set_kb   = 1000
 
 throttle.min_peers.normal.set = 5
