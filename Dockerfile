@@ -73,8 +73,8 @@ RUN git clone https://github.com/mirror/xmlrpc-c && \
 RUN wget -O - https://github.com/rakshasa/rtorrent/releases/download/v0.15.1/libtorrent-0.15.1.tar.gz | tar xz && \
     mv libtorrent-0.15.1 libtorrent && \
     cd libtorrent && \
-    ./autogen.sh && \
-    ./configure --with-posix-fallocate --disable-debug && \
+#    ./autogen.sh && \
+    ./configure --enable-udns --with-posix-fallocate --disable-debug && \
     make -j$(nproc) && \
     make install && \
     cd ..
@@ -91,7 +91,7 @@ RUN wget -O - https://github.com/rakshasa/rtorrent/releases/download/v0.15.1/lib
 RUN wget -O - https://github.com/rakshasa/rtorrent/releases/download/v0.15.1/rtorrent-0.15.1.tar.gz | tar xz && \
     mv rtorrent-0.15.1 rtorrent && \
     cd rtorrent && \
-    ./autogen.sh && \
+#    ./autogen.sh && \
     ./configure --disable-debug --with-xmlrpc-c && \
     make -j$(nproc) && \
     make install && \
