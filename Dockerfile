@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     libpsl-dev \
 		libudns-dev \
     zlib1g-dev \
+    natpmpc \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
@@ -58,55 +59,22 @@ RUN git clone https://github.com/mirror/xmlrpc-c && \
     make install && \
     cd ../..
 
-#RUN wget https://github.com/rakshasa/libtorrent/archive/slingamn-udns.10.zip && \
-#    unzip slingamn-udns.10.zip && \
-#    mv libtorrent-slingamn-udns.10 libtorrent && \
-#    rm slingamn-udns.10.zip
-
-#RUN cd libtorrent && \
-#    ./autogen.sh && \
-#    ./configure --with-udns --with-posix-fallocate --disable-debug && \
-#    make -j$(nproc) && \
-#    make install && \
-#    cd ..
-
 RUN wget -O - https://github.com/rakshasa/rtorrent/releases/download/v0.15.1/libtorrent-0.15.1.tar.gz | tar xz && \
     mv libtorrent-0.15.1 libtorrent && \
     cd libtorrent && \
-#    ./autogen.sh && \
     ./configure --enable-udns --with-posix-fallocate --disable-debug && \
     make -j$(nproc) && \
     make install && \
     cd ..
 
-#RUN wget -O - https://github.com/rakshasa/rtorrent-archive/raw/master/libtorrent-0.14.0.tar.gz | tar xz && \
-#    mv libtorrent-0.13.8 libtorrent && \
-#    cd libtorrent && \
-#    ./autogen.sh && \
-#    ./configure --with-posix-fallocate --disable-debug && \
-#    make -j$(nproc) && \
-#    make install && \
-#    cd ..
-
 RUN wget -O - https://github.com/rakshasa/rtorrent/releases/download/v0.15.1/rtorrent-0.15.1.tar.gz | tar xz && \
     mv rtorrent-0.15.1 rtorrent && \
     cd rtorrent && \
-#    ./autogen.sh && \
     ./configure --disable-debug --with-xmlrpc-c && \
     make -j$(nproc) && \
     make install && \
     ldconfig && \
     cd ..
-
-#RUN wget -O - https://github.com/rakshasa/rtorrent-archive/raw/master/rtorrent-0.10.0.tar.gz | tar xz && \
-#    mv rtorrent-0.9.8 rtorrent && \
-#    cd rtorrent && \
-#    ./autogen.sh && \
-#    ./configure --disable-debug --with-xmlrpc-c && \
-#    make -j$(nproc) && \
-#    make install && \
-#    ldconfig && \
-#    cd ..
 
 RUN rm -rf /build
 

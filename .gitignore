@@ -1,5 +1,6 @@
 *.un
 *.conf
+*.log
 /config/rtorrent/.session*
 /config/rtorrent/log
 /config/wireguard
