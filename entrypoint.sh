@@ -6,7 +6,7 @@ wg-quick up /wireguard/wg0.conf
 
 (
     while true; do
-        date >> /rtorrent/natpmpc.log
+        date > /rtorrent/natpmpc.log
         
         udp_output=$(natpmpc -a 0 0 udp 60 -g 10.2.0.1 2>&1)
         echo "$udp_output" >> /rtorrent/natpmpc.log
