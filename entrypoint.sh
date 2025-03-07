@@ -30,6 +30,6 @@ wg-quick up /wireguard/wg0.conf
     done
 ) &
 
-sleep 90
+sleep 1
 
 exec su - daedr -c "rtorrent"
