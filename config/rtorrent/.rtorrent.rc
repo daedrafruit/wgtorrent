@@ -1,3 +1,12 @@
+# Enable the default ratio group.
+ratio.enable=
+
+# Change the limits, the defaults should be sufficient.
+ratio.min.set=100
+
+# Changing the command triggered when the ratio is reached.
+method.set = group.seeding.ratio.command, "d.try_close= ; d.ignore_commands.set=1"
+
 network.bind_address.set = 10.2.0.2
 
 ## Instance layout (base paths)
@@ -139,4 +148,4 @@ log.open_file = "log", (cfg.logfile)
 log.add_output = "info", "log"
 #log.add_output = "tracker_debug", "log"
 
-network.port_range.set = 59940-59940
+network.port_range.set = 41387-41387
