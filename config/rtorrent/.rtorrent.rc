@@ -2,7 +2,7 @@
 ratio.enable=
 
 # Change the limits, the defaults should be sufficient.
-ratio.min.set=100
+ratio.min.set=120
 
 # Changing the command triggered when the ratio is reached.
 method.set = group.seeding.ratio.command, "d.try_close= ; d.ignore_commands.set=1"
@@ -148,4 +148,4 @@ log.open_file = "log", (cfg.logfile)
 log.add_output = "info", "log"
 #log.add_output = "tracker_debug", "log"
 
-network.port_range.set = 41387-41387
+network.port_range.set = 41599-41599

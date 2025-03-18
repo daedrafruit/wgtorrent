@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sleep 15
+
 sed -i 's|\[\[ $proto == -4 \]\] && cmd sysctl -q net\.ipv4\.conf\.all\.src_valid_mark=1|[[ $proto == -4 ]] \&\& [[ $(sysctl -n net.ipv4.conf.all.src_valid_mark) != 1 ]] \&\& cmd sysctl -q net.ipv4.conf.all.src_valid_mark=1|' /usr/bin/wg-quick
 
 wg-quick up /wireguard/wg0.conf
@@ -32,4 +34,8 @@ wg-quick up /wireguard/wg0.conf
 
 sleep 1
 
-exec su - daedr -c "rtorrent"
+rm -f "/rtorrent/.session/rtorrent.lock"
+
+su - daedr -c "tmux new-session -d -s rtorrent 'rtorrent'"
+
+tail -f /dev/null

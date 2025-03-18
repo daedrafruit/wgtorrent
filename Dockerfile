@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
 		libudns-dev \
     zlib1g-dev \
     natpmpc \
+    tmux \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
@@ -77,6 +78,9 @@ RUN wget -O - https://github.com/rakshasa/rtorrent/releases/download/v0.15.1/rto
     cd ..
 
 RUN rm -rf /build
+
+RUN curl -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/refs/heads/master/wait-for-it.sh && \
+    chmod +x /usr/local/bin/wait-for-it.sh
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
