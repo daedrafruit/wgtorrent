@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "options use-vc" > /etc/resolv.conf
+echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+chmod 644 /etc/resolv.conf
+
 sed -i 's|\[\[ $proto == -4 \]\] && cmd sysctl -q net\.ipv4\.conf\.all\.src_valid_mark=1|[[ $proto == -4 ]] \&\& [[ $(sysctl -n net.ipv4.conf.all.src_valid_mark) != 1 ]] \&\& cmd sysctl -q net.ipv4.conf.all.src_valid_mark=1|' /usr/bin/wg-quick
 
 wg-quick up /wireguard/wg0.conf

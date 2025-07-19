@@ -149,4 +149,4 @@ log.open_file = "log", (cfg.logfile)
 log.add_output = "info", "log"
 #log.add_output = "tracker_debug", "log"
 
-network.port_range.set = 45592-45592
+network.port_range.set = 45724-45724
