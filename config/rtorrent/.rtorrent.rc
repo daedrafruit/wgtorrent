@@ -1,13 +1,3 @@
-# Enable the default ratio group.
-ratio.enable=
-
-# Change the limits, the defaults should be sufficient.
-ratio.min.set=120
-ratio.min.set=120
-
-# Changing the command triggered when the ratio is reached.
-method.set = group.seeding.ratio.command, "d.close="
-
 network.bind_address.set = 10.2.0.2
 
 ## Instance layout (base paths)
@@ -65,36 +55,6 @@ execute.throw = sh, -c, (cat,\
     "\"",(cfg.watch),"/start\" ")
 
 
-## Peer settings
-throttle.max_uploads.set = 100
-throttle.max_uploads.global.set = 250
-
-throttle.global_down.max_rate.set_kb = 10000
-throttle.global_up.max_rate.set_kb   = 1000
-
-throttle.min_peers.normal.set = 20
-throttle.max_peers.normal.set = 60
-throttle.min_peers.seed.set = 30
-throttle.max_peers.seed.set = 80
-trackers.numwant.set = 80
-
-protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
-
-
-## Limits for file handle resources, this is optimized for
-## an `ulimit` of 1024 (a common default). You MUST leave
-## a ceiling of handles reserved for rTorrent's internal needs!
-network.http.max_open.set = 50
-network.max_open_files.set = 600
-network.max_open_sockets.set = 300
-
-
-## Memory resource usage (increase if you have a large number of items loaded,
-## and/or the available resources to spend)
-pieces.memory.max.set = 1800M
-network.xmlrpc.size_limit.set = 4M
-
-
 ## Basic operational settings (no need to change these)
 session.path.set = (cat, (cfg.session))
 directory.default.set = (cat, (cfg.download))
@@ -102,20 +62,6 @@ log.execute = (cat, (cfg.logs), "execute.log")
 #log.xmlrpc = (cat, (cfg.logs), "xmlrpc.log")
 execute.nothrow = sh, -c, (cat, "echo >",\
     (session.path), "rtorrent.pid", " ",(system.pid))
-
-
-## Other operational settings (check & adapt)
-encoding.add = UTF-8
-system.umask.set = 0027
-system.cwd.set = (directory.default)
-network.http.dns_cache_timeout.set = 25
-schedule2 = monitor_diskspace, 15, 60, ((close_low_diskspace, 1000M))
-#pieces.hash.on_completion.set = no
-#view.sort_current = seeding, greater=d.ratio=
-#keys.layout.set = qwerty
-#network.http.capath.set = "/etc/ssl/certs"
-#network.http.ssl_verify_peer.set = 0
-#network.http.ssl_verify_host.set = 0
 
 
 ## Some additional values and commands
@@ -133,20 +79,5 @@ schedule2 = watch_load, 11, 10, ((load.verbose, (cat, (cfg.watch), "load/*.torre
 ## Add & download straight away
 schedule2 = watch_start, 10, 10, ((load.start_verbose, (cat, (cfg.watch), "start/*.torrent")))
 
-
-## Run the rTorrent process as a daemon in the background
-## (and control via XMLRPC sockets)
-#system.daemon.set = true
-#network.scgi.open_local = (cat,(session.path),rpc.socket)
-#execute.nothrow = chmod,770,(cat,(session.path),rpc.socket)
-
-
-## Logging:
-##   Levels = critical error warn notice info debug
-##   Groups = connection_* dht_* peer_* rpc_* storage_* thread_* tracker_* torrent_*
-print = (cat, "Logging to ", (cfg.logfile))
-log.open_file = "log", (cfg.logfile)
-log.add_output = "info", "log"
-#log.add_output = "tracker_debug", "log"
-
 network.port_range.set = 45724-45724
+
