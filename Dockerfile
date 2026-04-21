@@ -1,92 +1,71 @@
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim AS builder
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    curl \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libc-ares-dev \
+    libncurses-dev \
+    libxml2-dev \
+    libxmlrpc-core-c3-dev \
+    libsigc++-2.0-dev \
+    zlib1g-dev \
+    libudns-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/rakshasa/libtorrent/tags | grep '"name"' | head -1 | cut -d'"' -f4) && \
+    curl -L "https://github.com/rakshasa/libtorrent/archive/refs/tags/${LIBTORRENT_VERSION}.tar.gz" | tar xz && \
+    cd libtorrent-${LIBTORRENT_VERSION#v} && \
+    autoreconf -fi && \
+    ./configure --enable-udns --with-posix-fallocate --disable-debug && \
+    make -j$(nproc) && \
+    make install && \
+    cd / && rm -rf /libtorrent-*
+
+RUN ldconfig
+
+RUN RTORRENT_VERSION=$(curl -s https://api.github.com/repos/rakshasa/rtorrent/tags | grep '"name"' | head -1 | cut -d'"' -f4) && \
+    curl -L "https://github.com/rakshasa/rtorrent/archive/refs/tags/${RTORRENT_VERSION}.tar.gz" | tar xz && \
+    cd rtorrent-${RTORRENT_VERSION#v} && \
+    autoreconf -fi && \
+    ./configure --with-xmlrpc-c --disable-debug && \
+    make -j$(nproc) && \
+    make install && \
+    cd / && rm -rf /rtorrent-*
+
+
+FROM debian:bookworm-slim
 
 RUN useradd -m -u 1000 daedr
 
 RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    build-essential \
-    autoconf \
-    automake \
-    libtool \
-    libcppunit-dev \
-    libsigc++-2.0-dev \
-    libncurses-dev \
-    libxml2-dev \
-    pkg-config \
-    software-properties-common \
-    wget \
+    libssl3 \
+    libcurl4 \
+    libc-ares2 \
+    libncursesw6 \
+    libxml2 \
+    libxmlrpc-core-c3 \
+    libsigc++-2.0-0v5 \
+    libudns0 \
+    zlib1g \
     wireguard \
     iproute2 \
     resolvconf \
     procps \
-    libpsl-dev \
-		libudns-dev \
-    zlib1g-dev \
     natpmpc \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /build
+COPY --from=builder /usr/local/bin/rtorrent /usr/local/bin/rtorrent
+COPY --from=builder /usr/local/lib/libtorrent* /usr/local/lib/
 
-RUN git clone https://github.com/openssl/openssl.git && \
-    cd openssl && \
-    ./config -fPIC && \
-    make -j$(nproc) && \
-    make install && \
-    cd ..
-
-RUN git clone https://github.com/c-ares/c-ares.git && \
-    cd c-ares && \
-    ./buildconf && \
-    ./configure --enable-nonblocking --enable-shared && \
-    make -j$(nproc) && \
-    make install && \
-    cd ..
-
-RUN git clone https://github.com/curl/curl.git && \
-    cd curl && \
-    ./buildconf && \
-    ./configure --enable-ares --with-openssl && \
-    make -j$(nproc) && \
-    make install && \
-    cd ..
-
-RUN git clone https://github.com/mirror/xmlrpc-c && \
-    cd xmlrpc-c/advanced && \
-    ./configure --disable-wininet-client --disable-libwww-client --enable-abyss-server --disable-cplusplus --disable-abyss-threads --disable-cgi-server --with-libwww-ssl && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../..
-
-RUN git clone https://github.com/rakshasa/libtorrent.git && \
-    cd libtorrent && \
-		git checkout $(git branch -a | grep -i 'stable' | sed 's#remotes/origin/##' | head -n1) && \
-    autoreconf -fi && \
-    ./configure \
-        --enable-udns \
-        --with-posix-fallocate \
-        --disable-debug && \
-    make -j$(nproc) && \
-    make install && \
-    cd ..
-
-RUN echo "/usr/local/lib" >> /etc/ld.so.conf.d/local.conf && \
-    ldconfig
-
-RUN git clone https://github.com/rakshasa/rtorrent.git && \
-    cd rtorrent && \
-		git checkout $(git branch -a | grep -i 'stable' | sed 's#remotes/origin/##' | head -n1) && \
-    autoreconf -fi && \
-    ./configure \
-        --with-xmlrpc-c \
-        --disable-debug && \
-    make -j$(nproc) && \
-    make install && \
-    cd ..
-
-RUN rm -rf /build
+RUN ldconfig
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
